@@ -1,0 +1,50 @@
+﻿<Window x:Class="RESTAURANT.AddWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RESTAURANT"
+        mc:Ignorable="d"
+        Height="310" Width="800">
+    <Grid Background="#f5f5dc">
+        <StackPanel Orientation="Vertical">
+            <Label Content="Тип блюда"/>
+            <ComboBox
+                ItemsSource="{Binding _DishType}"
+                SelectedItem="{Binding CurrentDish.ProductType}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding Title}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Label 
+                Content="Название блюда"/>
+            <TextBox 
+                Height="27"
+                Text="{Binding CurrentDish.Title}"/>
+            <Label 
+                Content="Артикул"/>
+            <TextBox
+                Height="27" 
+                Text="{Binding CurrentDish.ArticleNumber}"/>
+            <Label 
+                Content="Цена"/>
+            <TextBox 
+                Height="27"
+                Text="{Binding CurrentDish.MinCostForAgent}"/>
+            <Button
+                x:Name="SaveButton" 
+                Content="Сохранить"
+                Click="SaveButton_Click"
+                Height="27"
+                Background="#ff4f00"/>
+            <Button 
+                x:Name="BackButton"
+                Content="Назад"
+                Click="BackButton_Click"
+                Background="#ff4f00"
+                Height="27"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -93,6 +93,8 @@
 
 # Структурный системный анализ
 
+	Разработка функциональной модели ИС   
+
 Проектирование информационной системы «Ресторан» начинается с этапа построения бизнес-процессов. Для описания бизнес-процессов в информационной системе «Ресторан», используется диаграмма прецедентов.
 
 Основное назначение диаграммы — описание функциональности и поведения, позволяющее заказчику, конечному пользователю и разработчику совместно обсуждать проектируемую или существующую систему. 
@@ -127,7 +129,7 @@
 Основными элементами диаграммы последовательности являются обозначения объектов (прямоугольники с названиями объектов), вертикальные «линии жизни» (англ. lifeline), отображающие течение времени, прямоугольники, отражающие деятельность объекта или исполнение им определенной функции (прямоугольники на пунктирной «линии жизни»), и стрелки, показывающие обмен сигналами или сообщениями между объектами.
 
 ### Диаграмма UseCase:
-![Use case](./img/UseCase.PNG)
+![Use case](./img/UseCase.png)
 
 
 # Разработка и реализация проекта базы данных
@@ -161,12 +163,440 @@ ER-модель представляет собой формальную кон�
 
 ##### Код разметки окна:
 ```xml
+<Grid Background="#f5f5dc">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
+        <StackPanel 
+            Orientation="Vertical"
+            VerticalAlignment="Top"
+            Width="150">
+            <Button 
+                x:Name="AddButton"
+                Content="Добавить"
+                Click="AddButton_Click"
+                VerticalAlignment="Top"
+                Background="#ff4f00"
+                Height="27"/>
+
+            
+
+        </StackPanel>
+        <Button 
+            x:Name="Exit" 
+            Content="Выход" 
+            Click="Exit_Click" 
+            VerticalAlignment="Bottom"
+            Background="#ff4f00"
+            Height="27"/>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Height="50"
+                Orientation="Horizontal">
+
+                <Label 
+                    Content="Сортировка по цене"
+                    VerticalAlignment="Center" 
+                    Margin="5"/>
+
+                <RadioButton
+                    GroupName="Rooms"
+                    Tag="1"
+                    Content="По возрастанию"
+                    IsChecked="True"
+                    Checked="RadioButton_Checked"
+                    VerticalAlignment="Center"
+                    Margin="5"/>
+                <RadioButton
+                    GroupName="Rooms"
+                    Tag="2"
+                    Content="По убыванию"
+                    Checked="RadioButton_Checked"
+                    VerticalAlignment="Center"
+                    Margin="5"/>
+
+                <Label 
+                    Content="Фильтрация"
+                    VerticalAlignment="Center"
+                    Margin="5"/>
+
+                <ComboBox
+                    x:Name="FilterTypeComboBox"
+                    SelectedIndex="0"
+                    VerticalContentAlignment="Center"
+                    MinWidth="150"
+                    MinHeight="10"
+                    SelectionChanged="FilterTypeComboBox_SelectionChanged"
+                    ItemsSource="{Binding DishTypeList}"
+                    Margin="5">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <Label 
+                    Content="Поиск по названию блюда" 
+                    VerticalAlignment="Center"
+                    Margin="5"/>
+                <TextBox
+                    Width="150"
+                    VerticalAlignment="Center"
+                    x:Name="SearchFilterTextBox" 
+                    KeyUp="SearchFilter_KeyUp"
+                    BorderThickness="2"
+                    Margin="5"/>
+            </StackPanel>
+
+            <ListView
+                Grid.Row="1"
+                ItemsSource="{Binding DishList}"
+                x:Name="DishListView"
+                BorderThickness="1">
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem x:Name="EditButton" Header="Редактировать" Click="EditButton_Click" />
+                        <MenuItem x:Name="DeleteButton" Header="Удалить" Click="DeleteButton_Click" />
+                    </ContextMenu>
+                </ListView.ContextMenu>
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter
+                            Property="HorizontalContentAlignment"
+                            Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Border 
+                            BorderThickness="1" 
+                            BorderBrush="Black">
+                            <Grid 
+                                Margin="10"
+                                HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="150"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Image
+                                    Width="200" 
+                                    Height="200"
+                                    Source="{Binding Path=ImagePreview}" />
+
+                                <Grid Grid.Column="1" Margin="5">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontSize="20" Text="{Binding Title}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="2">
+                                        <TextBlock FontSize="20" Text="{Binding ProductType.Title}" />
+
+                                        <TextBlock FontSize="20" Text="{Binding ArticuleNumber}" />
+                                    </StackPanel>
+                                </Grid>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock FontSize="20" Text="Цена:" HorizontalAlignment="Right"/>
+                                    <TextBlock FontSize="20" Text="{Binding MinCostForAgent}" HorizontalAlignment="Right"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+
+            <StackPanel
+                Grid.Row="2"
+                HorizontalAlignment="Right" 
+                Orientation="Horizontal">
+                <Button 
+                    Content="Назад" 
+                    Name="PrevPage"
+                    Click="PrevPage_Click"
+                    Background="#ff4f00"/>
+                <TextBlock 
+                    Text="{Binding CurrentPage, StringFormat=Страница {0}}"
+                    VerticalAlignment="Center"
+                    Margin="5"/>
+                <Button
+                    Content="Вперёд"
+                    Name="NextPage"
+                    Click="NextPage_Click"
+                    Background="#ff4f00"/>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
 ```
 ##### Логика главного окна:
 
 ```cs
+public partial class Product
+    {
+        public Uri ImagePreview
+        {
+            get
+            {
+                var imageName = Environment.CurrentDirectory + Image ?? "";
+                return System.IO.File.Exists(imageName) ? new Uri(imageName) : new Uri("pack://application:,,,/picture.png");
+            }
+        }
+    }
+    public partial class MainWindow : Window, INotifyPropertyChanged
+    {
 
+        private IEnumerable<Product> _DishList;
+
+        private int _CurrentPage = 1;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public int CurrentPage
+        {
+            get
+            {
+                return _CurrentPage;
+            }
+            set
+            {
+                if (value > 0)
+                {
+                    if ((_DishList.Count() % 10) == 0)
+                    {
+                        if (value <= _DishList.Count() / 10)
+                        {
+                            _CurrentPage = value;
+                            Invalidate();
+                        }
+                    }
+                    else
+                    {
+                        if (value <= (_DishList.Count() / 10) + 1)
+                        {
+                            _CurrentPage = value;
+                            Invalidate();
+                        }
+                    }
+                }
+            }
+        }
+
+        private string _SearchFilter = "";
+        public string SearchFilter
+        {
+            get
+            {
+                return _SearchFilter;
+            }
+            set
+            {
+                _SearchFilter = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("DishList"));
+                }
+            }
+        }
+
+        private void SearchFilter_KeyUp(object sender, KeyEventArgs e)
+        {
+            SearchFilter = SearchFilterTextBox.Text;
+            Invalidate();
+        }
+
+        private bool _SortList = true;
+        public bool SortList
+        {
+            get
+            {
+                return _SortList;
+            }
+            set
+            {
+                _SortList = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("DishList"));
+                }
+            }
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            SortList = (sender as RadioButton).Tag.ToString() == "1";
+        }
+
+        private void Invalidate()
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DishList"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentPage"));
+        }
+
+        public IEnumerable<Product> DishList
+        {
+            get
+            {
+                var Result = _DishList;
+
+                if (_ProductTypeFilterValue > 0)
+                    Result = Result.Where(ai => ai.ProductTypeID == _ProductTypeFilterValue);
+
+                if (SearchFilter != "")
+                    Result = Result.Where(ai => ai.Title.IndexOf(SearchFilter, StringComparison.OrdinalIgnoreCase) >= 0);
+
+                if (SortList) Result = Result.OrderBy(ai => ai.MinCostForAgent);
+                else Result = Result.OrderByDescending(ai => ai.MinCostForAgent);
+
+                return Result.Skip((CurrentPage - 1) * 10).Take(10);
+
+
+
+
+            }
+            set
+            {
+                _DishList = value;
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("DishList"));
+                }
+            }
+        }
+
+        public IEnumerable<Product> PacientsList
+        {
+            get
+            {
+                var Result = _DishList;
+
+                if (SearchFilter != "")
+                    Result = Result.Where(ai => ai.Title.IndexOf(SearchFilter, StringComparison.OrdinalIgnoreCase) >= 0);
+
+                return Result;
+            }
+            set
+            {
+                _DishList = value;
+            }
+        }
+
+        public List<ProductType> DishTypeList { get; set; }
+
+        private int _ProductTypeFilterValue = 0;
+        public int ProductTypeFilterValue
+        {
+            get
+            {
+                return _ProductTypeFilterValue;
+            }
+            set
+            {
+                _ProductTypeFilterValue = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("DishList"));
+                }
+            }
+        }
+        public MainWindow()
+        {
+            InitializeComponent();
+            DataContext = this;
+            DishList = Core.DB.Product.ToArray();
+            DishTypeList = Core.DB.ProductType.ToList();
+            DishTypeList.Insert(0, new ProductType { Title = "Все типы" });
+        }
+
+
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void PrevPage_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentPage--;
+        }
+
+        private void NextPage_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentPage++;
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            var addWindow = new AddWindow(new Product());
+            if (addWindow.ShowDialog() == true)
+            {
+                DishList = Core.DB.Product.ToArray();
+            }
+
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            var w = new MainWindow();
+            w.Show();
+
+            this.Close();
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var DeleteProduct = DishListView.SelectedItem as Product;
+            try
+            {
+                Core.DB.Product.Remove(DeleteProduct);
+                Core.DB.SaveChanges();
+
+                MessageBox.Show($"Удалено");
+
+                DishList = Core.DB.Product.ToArray();
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("DishList"));
+                }
+            }
+            catch { }
+
+        }
+
+        private void FilterTypeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ProductTypeFilterValue = (FilterTypeComboBox.SelectedItem as ProductType).ID;
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            var EditTourWindow = new AddWindow(DishListView.SelectedItem as Product);
+            if (EditTourWindow.ShowDialog() == true)
+            {
+                DishList = Core.DB.Product.ToArray();
+            }
+        }
+    }
+}
 ```
 
 #### Окно добавления и редактирования:
@@ -174,12 +604,89 @@ ER-модель представляет собой формальную кон�
 
 ##### Код разметки окна:
 ```xml
-
+<Grid Background="#f5f5dc">
+        <StackPanel Orientation="Vertical">
+            <Label Content="Тип блюда"/>
+            <ComboBox
+                ItemsSource="{Binding _DishType}"
+                SelectedItem="{Binding CurrentDish.ProductType}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding Title}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Label 
+                Content="Название блюда"/>
+            <TextBox 
+                Height="27"
+                Text="{Binding CurrentDish.Title}"/>
+            <Label 
+                Content="Артикул"/>
+            <TextBox
+                Height="27" 
+                Text="{Binding CurrentDish.ArticleNumber}"/>
+            <Label 
+                Content="Цена"/>
+            <TextBox 
+                Height="27"
+                Text="{Binding CurrentDish.MinCostForAgent}"/>
+            <Button
+                x:Name="SaveButton" 
+                Content="Сохранить"
+                Click="SaveButton_Click"
+                Height="27"
+                Background="#ff4f00"/>
+            <Button 
+                x:Name="BackButton"
+                Content="Назад"
+                Click="BackButton_Click"
+                Background="#ff4f00"
+                Height="27"/>
+        </StackPanel>
+    </Grid>
 ```
 ##### Логика данного окна:
 
 ```cs
+public partial class AddWindow : Window
+    {
+        public Product CurrentDish { get; set; }
+        public IEnumerable<ProductType> _DishType { get; set; }
 
+
+        public AddWindow(Product dish)
+        {
+            InitializeComponent();
+            DataContext = this;
+            CurrentDish = dish;
+            _DishType = Core.DB.ProductType.ToArray();
+        }
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (CurrentDish.ID == 0)
+                    Core.DB.Product.Add(CurrentDish);
+
+                Core.DB.SaveChanges();
+
+                DialogResult = true;
+
+                MessageBox.Show($"Успешно!");
+            }
+            catch
+            {
+                MessageBox.Show($"Ошибка");
+            }
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+    }
+}
 ```
 
 # Заключение
